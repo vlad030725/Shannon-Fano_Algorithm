@@ -7,16 +7,17 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        string codeString = "АБРАКАДАБРА";
+        string InputPath = "test.txt";
+        string result;
         
         Coder coder = new Coder();
-        string returnString = coder.Coding(codeString);
+        string returnString = coder.Coding(InputPath);
 
         Console.WriteLine(returnString);
 
         Decoder decoder = new Decoder();
-        codeString = decoder.Decoding(returnString);
+        result = decoder.Decoding(returnString);
 
-        Console.WriteLine(codeString);
+        Console.WriteLine(result);
     }
 }

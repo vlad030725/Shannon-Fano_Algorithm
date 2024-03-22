@@ -10,8 +10,11 @@ internal class Coder
 {
     public Coder() { }
 
-    public string Coding(string Str)
+    public string Coding(string InputPath)
     {
+        string Str = File.ReadAllText(InputPath);
+
+        Str += '\0';
         Dictionary<char, int> keyValuePairs = new Dictionary<char, int>(); // заполнение словоря буквами из которых состоят входные данные и высчитываем частоту их появления
         for (int i = 0; i < Str.Length; i++)
         {
@@ -99,7 +102,7 @@ internal class Coder
             }
             if (Math.Abs(leftSum - rightSum) <= raznica)
             {
-                System.Console.WriteLine($"{leftSum} {rightSum} {leftSum - rightSum} {i}");
+                //System.Console.WriteLine($"{leftSum} {rightSum} {leftSum - rightSum} {i}");
                 raznica = Math.Abs(leftSum - rightSum);
                 imin = i;
             }
