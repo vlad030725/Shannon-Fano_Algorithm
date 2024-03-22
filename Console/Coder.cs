@@ -39,7 +39,10 @@ internal class Coder
 
         CreateKeyCodes(tree, keyCodes);
 
+        bool fEnd = false;
+
         string path = "test.dat";
+        using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Create))) { }
 
         for (int i = 0; i < keyCodes.Count; i++)
         {
@@ -61,7 +64,7 @@ internal class Coder
             codeString += keyCodes.ElementAt(i).Value;
         }
 
-        using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Create)))
+        using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Open)))
         {
             writer.Write(keyCodes.Count);
             for (int i = 0; i < keyCodes.Count; i++)
@@ -69,14 +72,48 @@ internal class Coder
                 writer.Write(keyCodes.ElementAt(i).Key);
                 writer.Write(keyCodes.ElementAt(i).Value);
             }
-            //writer.Write(codeString);
         }
 
-        //codeString += '\n';
+        char w = (char)0b1000_0000_0000_0000;
+        char writenBits = (char)0b0000_0000_0000_0000;
 
-        //returnString = codeString + returnString;
+        while (Str.Length > 0)
+        {
+            for (int i = 0; i < keyCodes[Str[0]].Length; i++)
+            {
+                if (Str[0] == '\0' && i + 1 == keyCodes[Str[0]].Length)
+                {
+                    fEnd = true;
+                }
+                if (keyCodes[Str[0]][i] == '1')
+                {
+                    writenBits = (char)(writenBits | w);
+                }
+                w >>= 1;
+                if (w == (char)0b0000_0000_0000_0000 || fEnd)
+                {
+                    using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Open)))
+                    {
+                        writer.Seek(0, SeekOrigin.End);
+                        writer.Write(writenBits);
+                    }
+                    writenBits = (char)0b0000_0000_0000_0000;
+                    w = (char)0b1000_0000_0000_0000;
 
-        
+                    if (fEnd)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            Str = Str.Substring(1);
+
+            if (fEnd)
+            {
+                break;
+            }
+        }
 
         return returnString;
     }

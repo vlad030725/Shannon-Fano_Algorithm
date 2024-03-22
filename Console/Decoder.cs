@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,14 @@ internal class Decoder
 
     public string Decoding(string codeString)
     {
-        Dictionary<string, char> keyCodes = new Dictionary<string, char>();
+        char readBits;
+        char w = (char)0b1000_0000_0000_0000;
+        char tmpBit = (char)0b0000_0000_0000_0000;
+        string tmpStringCode = "";
+        string result = "";
+        bool f = false;
+
+        Dictionary<string, char> KeyCodes = new Dictionary<string, char>();
 
         using (BinaryReader reader = new BinaryReader(File.Open("test.dat", FileMode.Open)))
         {
@@ -21,52 +29,51 @@ internal class Decoder
             {
                 char value = reader.ReadChar();
                 string key = reader.ReadString();
-                keyCodes.Add(key, value);
+                KeyCodes.Add(key, value);
             }
-        }
 
-        string code = "";
-        //char? symbol = null;
-        //while(codeString[0] != '\n')
-        //{
-        //    if (codeString[0] == '0' || codeString[0] == '1')
-        //    {
-        //        code += codeString[0];
-        //        codeString = codeString.Remove(0, 1);
-        //    }
-        //    else
-        //    {
-        //        if (symbol != null)
-        //        {
-        //            //keyCodes.Add(code, (char)symbol);
-        //        }
-        //        code = "";
-        //        symbol = codeString[0];
-        //        codeString = codeString.Remove(0, 1);
-        //    }
-        //}
-        ////keyCodes.Add(code, (char)symbol);
-        //codeString = codeString.Remove(0, 1);
-
-        for (int i = 0; i < keyCodes.Count; i++)
-        {
-            System.Console.WriteLine($"{keyCodes.ElementAt(i).Value} {keyCodes.ElementAt(i).Key}");
-        }
-
-        code = "";
-        string returnString = "";
-
-        while (codeString.Length > 0) // Декодирование строки по алфавиту
-        {
-            code += codeString[0];
-            codeString = codeString.Remove(0, 1);
-            if (keyCodes.ContainsKey(code))
+            while (reader.PeekChar() > -1 && !f)
             {
-                returnString += keyCodes[code];
-                code = "";
+                readBits = reader.ReadChar();
+
+                for (int i = 0; i < 16; i++)
+                {
+                    tmpBit = (char)(readBits & w);
+                    if (tmpBit == (char)0b0000_0000_0000_0000)
+                    {
+                        tmpStringCode += "0";
+                    }
+                    else
+                    {
+                        tmpStringCode += "1";
+                    }
+                    w >>= 1;
+                }
+
+                w = (char)0b1000_0000_0000_0000;
+
+                int startindex = 0;
+                string tmpCharCode = "";
+
+                for (int i = 0; i < tmpStringCode.Length; i++)
+                {
+                    tmpCharCode += tmpStringCode[i];
+                    if (KeyCodes.ContainsKey(tmpCharCode))
+                    {
+                        if (KeyCodes[tmpCharCode] == '\0')
+                        {
+                            f = true;
+                            break;
+                        }
+                        result += KeyCodes[tmpCharCode];
+                        startindex = i + 1;
+                        tmpCharCode = "";
+                    }
+                }
+                tmpStringCode = tmpStringCode.Substring(startindex);
             }
         }
 
-        return returnString;
+        return result;
     }
 }
