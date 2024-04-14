@@ -11,18 +11,17 @@ internal class Decoder
 {
     public Decoder() { }
 
-    public string Decoding(string codeString)
+    public string Decoding(string path)
     {
-        char readBits;
-        char w = (char)0b1000_0000_0000_0000;
-        char tmpBit = (char)0b0000_0000_0000_0000;
+        byte readBits;
+        byte w = 0b1000_0000;
         string tmpStringCode = "";
         string result = "";
         bool f = false;
 
         Dictionary<string, char> KeyCodes = new Dictionary<string, char>();
 
-        using (BinaryReader reader = new BinaryReader(File.Open("test.dat", FileMode.Open)))
+        using (BinaryReader reader = new BinaryReader(File.Open(path, FileMode.Open)))
         {
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
@@ -32,14 +31,14 @@ internal class Decoder
                 KeyCodes.Add(key, value);
             }
 
-            while (reader.PeekChar() > -1 && !f)
+            while (!f)
             {
-                readBits = reader.ReadChar();
+                readBits = reader.ReadByte();
 
-                for (int i = 0; i < 16; i++)
+                for (int i = 0; i < 8; i++)
                 {
-                    tmpBit = (char)(readBits & w);
-                    if (tmpBit == (char)0b0000_0000_0000_0000)
+                    byte tmpBit = (byte)(readBits & w);
+                    if (tmpBit == 0b0000_0000)
                     {
                         tmpStringCode += "0";
                     }
@@ -50,7 +49,7 @@ internal class Decoder
                     w >>= 1;
                 }
 
-                w = (char)0b1000_0000_0000_0000;
+                w = 0b1000_0000;
 
                 int startindex = 0;
                 string tmpCharCode = "";

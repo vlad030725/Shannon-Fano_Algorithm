@@ -41,7 +41,7 @@ internal class Coder
 
         bool fEnd = false;
 
-        string path = "test.dat";
+        string path = InputPath.Replace("txt", "dat");
         using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Create))) { }
 
         for (int i = 0; i < keyCodes.Count; i++)
@@ -74,8 +74,8 @@ internal class Coder
             }
         }
 
-        char w = (char)0b1000_0000_0000_0000;
-        char writenBits = (char)0b0000_0000_0000_0000;
+        byte w = 0b1000_0000;
+        byte writenBits = 0b0000_0000;
 
         while (Str.Length > 0)
         {
@@ -87,18 +87,18 @@ internal class Coder
                 }
                 if (keyCodes[Str[0]][i] == '1')
                 {
-                    writenBits = (char)(writenBits | w);
+                    writenBits = (byte)(writenBits | w);
                 }
                 w >>= 1;
-                if (w == (char)0b0000_0000_0000_0000 || fEnd)
+                if (w == 0b0000_0000 || fEnd)
                 {
                     using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Open)))
                     {
                         writer.Seek(0, SeekOrigin.End);
                         writer.Write(writenBits);
                     }
-                    writenBits = (char)0b0000_0000_0000_0000;
-                    w = (char)0b1000_0000_0000_0000;
+                    writenBits = 0b0000_0000;
+                    w = 0b1000_0000;
 
                     if (fEnd)
                     {

@@ -7,16 +7,16 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        string InputPath = "test.txt";
+        string InputPath = "skazka-o-care-saltane";
         string result;
         
         Coder coder = new Coder();
-        string returnString = coder.Coding(InputPath);
+        string returnString = coder.Coding(InputPath + ".txt");
 
         Console.WriteLine(returnString);
 
         Decoder decoder = new Decoder();
-        result = decoder.Decoding(returnString);
+        result = decoder.Decoding(InputPath + ".dat");
 
         Console.WriteLine(result);
     }
