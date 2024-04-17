@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Console;
 
-internal class Coder
+public class Coder
 {
     public Coder() { }
 

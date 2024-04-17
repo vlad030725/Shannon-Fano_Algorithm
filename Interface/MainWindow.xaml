@@ -1,0 +1,58 @@
+﻿<Window x:Class="Interface.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Interface"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Кодер">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="0.2*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.5*"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition Height="2*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Grid.Column="0"  Margin="10">
+                            <Button Content="Выбрать файл" 
+                                    FontSize="20"
+                                    Click="ChooseFileClick"/>
+                        </Grid>
+                        <Grid Grid.Row="1" Grid.Column="0"  Margin="10">
+                            <Button Content="Начать кодирование"
+                                    FontSize="20"
+                                    Click="StartCoding"/>
+                        </Grid>
+                        <Grid Grid.Row="0" Grid.Column="1">
+                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                <Label Content="Выбранный файл:" 
+                                       FontSize="20"/>
+                                <Label FontSize="20" 
+                                       x:Name="ChosenFile"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="10">
+                        <ProgressBar x:Name="progressBar"/>
+                        
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Декодер">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>

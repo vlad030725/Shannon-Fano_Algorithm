@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Console;
 
-internal class Decoder
+public class Decoder
 {
     public Decoder() { }
 
