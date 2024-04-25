@@ -42,6 +42,10 @@
                                        x:Name="ChosenFile"/>
                             </StackPanel>
                         </Grid>
+                        <Grid Grid.Row="2" Grid.Column="0">
+                            <Label Content=""
+                                   x:Name="StatusLabelCoding"/>
+                        </Grid>
                     </Grid>
                     <Grid Grid.Row="1" Margin="10">
                         <ProgressBar x:Name="progressBar"/>

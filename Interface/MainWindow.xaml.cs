@@ -22,6 +22,8 @@ namespace Interface
         private string filename;
         private Coder coder;
         private Console.Decoder decoder;
+        private bool IsCoding = true;
+
         public MainWindow()
         {
             coder = new Coder();
@@ -31,6 +33,10 @@ namespace Interface
 
         private void StartCoding(object sender, RoutedEventArgs e)
         {
+
+            //StatusLabelCoding.Content = "Происходит процесс кодирования...";
+            //progressBar.Value = 50;
+            //new Thread(UpdateProgressBar).Start();
             if (filename == null)
             {
                 MessageBox.Show("Файл не выбран!");
@@ -38,9 +44,19 @@ namespace Interface
             else
             {
                 coder.Coding(filename);
+                IsCoding = false;
             }
-            
+            //UpdateProgressBar();
         }
+
+        //private void UpdateProgressBar()
+        //{
+        //    while (IsCoding)
+        //    {
+        //        progressBar.Value = coder.ProgressValue;
+        //    }
+        //    IsCoding = true;
+        //}
 
         private void ChooseFileClick(object sender, RoutedEventArgs e)
         {
@@ -57,6 +73,16 @@ namespace Interface
                 filename = dlg.FileName;
                 ChosenFile.Content = filename;
             }
+        }
+
+        private void FinishMessage()
+        {
+            StatusLabelCoding.Content = "Файл закодирован";
+        }
+
+        private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
         }
     }
 }

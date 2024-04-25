@@ -8,11 +8,14 @@ namespace Console;
 
 public class Coder
 {
+    public int ProgressValue {  get; private set; }
+
     public Coder() { }
 
     public string Coding(string InputPath)
     {
         string Str = File.ReadAllText(InputPath);
+        int plusBar = Str.Length / 100;
 
         Str += '\0';
         Dictionary<char, int> keyValuePairs = new Dictionary<char, int>(); // заполнение словоря буквами из которых состоят входные данные и высчитываем частоту их появления
@@ -41,7 +44,7 @@ public class Coder
 
         bool fEnd = false;
 
-        string path = InputPath.Replace("txt", "dat");
+        string path = InputPath.Replace(InputPath.Substring(InputPath.LastIndexOf('.')), ".dat");
         using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Create))) { }
 
         for (int i = 0; i < keyCodes.Count; i++)
@@ -76,9 +79,19 @@ public class Coder
 
         byte w = 0b1000_0000;
         byte writenBits = 0b0000_0000;
+        int iterPlusBar = 0;
 
         while (Str.Length > 0)
         {
+            if (iterPlusBar > plusBar)
+            {
+                iterPlusBar = 0;
+                ProgressValue++;
+            }
+            else
+            {
+                iterPlusBar++;
+            }
             for (int i = 0; i < keyCodes[Str[0]].Length; i++)
             {
                 if (Str[0] == '\0' && i + 1 == keyCodes[Str[0]].Length)
