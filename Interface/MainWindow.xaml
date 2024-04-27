@@ -16,7 +16,7 @@
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.5*"/>
+                            <ColumnDefinition Width="0.4*"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
@@ -26,20 +26,28 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0" Grid.Column="0"  Margin="10">
                             <Button Content="Выбрать файл" 
-                                    FontSize="20"
+                                    FontSize="16"
                                     Click="ChooseFileClick"/>
                         </Grid>
                         <Grid Grid.Row="1" Grid.Column="0"  Margin="10">
                             <Button Content="Начать кодирование"
-                                    FontSize="20"
+                                    FontSize="16"
                                     Click="StartCoding"/>
                         </Grid>
                         <Grid Grid.Row="0" Grid.Column="1">
-                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                <Label Content="Выбранный файл:" 
-                                       FontSize="20"/>
-                                <Label FontSize="20" 
-                                       x:Name="ChosenFile"/>
+                            <StackPanel VerticalAlignment="Center" Orientation="Vertical">
+                                <TextBlock Text="Выбранный файл:" 
+                                       FontSize="14"/>
+                                <TextBlock FontSize="14" 
+                                           x:Name="ChosenFile"
+                                           TextWrapping="WrapWithOverflow"/>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Row="1" Grid.Column="1">
+                            <StackPanel VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                <TextBlock Text="Степень сжатия: "/>
+                                <TextBlock x:Name="compressionRatio"/>
                             </StackPanel>
                         </Grid>
                         <Grid Grid.Row="2" Grid.Column="0">

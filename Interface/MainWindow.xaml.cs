@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using Console;
+using System.IO;
 //using System.CodeDom;
 
 namespace Interface
@@ -19,7 +20,7 @@ namespace Interface
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string filename;
+        private string filename = "";
         private Coder coder;
         private Console.Decoder decoder;
         private bool IsCoding = true;
@@ -46,6 +47,7 @@ namespace Interface
                 coder.Coding(filename);
                 IsCoding = false;
             }
+            compressionRatio.Text = Convert.ToString(String.Format("{0:0.##}", ((new FileInfo(filename).Length - new FileInfo(filename.Replace(filename.Substring(filename.LastIndexOf('.')), ".dat")).Length) / (double)new FileInfo(filename).Length) * 100)) + "%";
             //UpdateProgressBar();
         }
 
@@ -71,7 +73,7 @@ namespace Interface
             {
                 // Open document 
                 filename = dlg.FileName;
-                ChosenFile.Content = filename;
+                ChosenFile.Text = filename;
             }
         }
 
