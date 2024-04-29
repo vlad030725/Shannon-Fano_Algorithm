@@ -44,7 +44,11 @@ namespace Interface
             }
             else
             {
+                long begin = DateTime.Now.Ticks;
                 coder.Coding(filename);
+                long end = DateTime.Now.Ticks;
+                TimeSpan totalTimeSpan = new TimeSpan(end - begin);
+                timeCoding.Text = totalTimeSpan.ToString();
                 IsCoding = false;
             }
             compressionRatio.Text = Convert.ToString(String.Format("{0:0.##}", ((new FileInfo(filename).Length - new FileInfo(filename.Replace(filename.Substring(filename.LastIndexOf('.')), ".dat")).Length) / (double)new FileInfo(filename).Length) * 100)) + "%";
@@ -85,6 +89,22 @@ namespace Interface
         private void ProgressBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
 
+        }
+
+        private void ChooseFileClick2(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.DefaultExt = ".txt";
+            //dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif";
+
+            bool? result = dlg.ShowDialog();
+
+            if (result == true)
+            {
+                // Open document 
+                filename = dlg.FileName;
+                ChosenFile.Text = filename;
+            }
         }
     }
 }
