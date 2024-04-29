@@ -11,17 +11,17 @@ public class Decoder
 {
     public Decoder() { }
 
-    public string Decoding(string path)
+    public void Decoding(string pathInput, string pathOutput)
     {
         byte readBits;
         byte w = 0b1000_0000;
         string tmpStringCode = "";
-        string result = "";
+        //string result = "";
         bool f = false;
 
         Dictionary<string, char> KeyCodes = new Dictionary<string, char>();
 
-        using (BinaryReader reader = new BinaryReader(File.Open(path, FileMode.Open)))
+        using (BinaryReader reader = new BinaryReader(File.Open(pathInput, FileMode.Open)))
         {
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
@@ -64,7 +64,12 @@ public class Decoder
                             f = true;
                             break;
                         }
-                        result += KeyCodes[tmpCharCode];
+                        using (BinaryWriter writer = new BinaryWriter(new FileStream(pathOutput, FileMode.Create, FileAccess.Write)))
+                        {
+                            writer.BaseStream.Seek(0, SeekOrigin.End);
+                            writer.Write(KeyCodes[tmpCharCode]);
+                        }
+                        //result += KeyCodes[tmpCharCode];
                         startindex = i + 1;
                         tmpCharCode = "";
                     }
@@ -73,6 +78,6 @@ public class Decoder
             }
         }
 
-        return result;
+        //return result;
     }
 }

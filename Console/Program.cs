@@ -16,8 +16,8 @@ internal class Program
         //Console.WriteLine(returnString);
 
         Decoder decoder = new Decoder();
-        result = decoder.Decoding(InputPath + ".dat");
+        //result = decoder.Decoding(InputPath + ".dat");
 
-        Console.WriteLine(result);
+        //Console.WriteLine(result);
     }
 }

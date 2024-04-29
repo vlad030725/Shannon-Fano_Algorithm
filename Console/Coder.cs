@@ -19,21 +19,9 @@ public class Coder
         BinaryReader ReaderInputFile = new BinaryReader(new FileStream(InputPath, FileMode.Open, FileAccess.Read));
         int fileLenght = (int)ReaderInputFile.BaseStream.Length;
         char symbol;
-        //string Str = File.ReadAllText(InputPath);
-        //int plusBar = Str.Length / 100;
-
-        //Str += '\0';
         Dictionary<char, int> keyValuePairs = new Dictionary<char, int>(); // заполнение словоря буквами из которых состоят входные данные и высчитываем частоту их появления
-        for (int i = 0; i < fileLenght; i++)
+        while (ReaderInputFile.PeekChar() != -1)
         {
-            //try 
-            //{
-            //    symbol = ReaderInputFile.ReadChar();
-            //}
-            //catch
-            //{
-            //    break;
-            //}
             symbol = ReaderInputFile.ReadChar();
 
             if (keyValuePairs.ContainsKey(symbol))
@@ -65,7 +53,7 @@ public class Coder
 
         bool fEnd = false;
 
-        string path = InputPath.Replace(InputPath.Substring(InputPath.LastIndexOf('.')), ".dat");
+        string path = InputPath.Replace(InputPath.Substring(InputPath.LastIndexOf('.')), ".vld");
         using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Create))) { }
 
         for (int i = 0; i < keyCodes.Count; i++)
@@ -103,7 +91,7 @@ public class Coder
         byte writenBits = 0b0000_0000;
         int iterPlusBar = 0;
 
-        while (ReaderInputFile.BaseStream.CanRead)
+        while (ReaderInputFile.PeekChar() != -1)
         {
             //if (iterPlusBar > plusBar)
             //{
