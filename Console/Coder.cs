@@ -1,28 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Console;
+﻿namespace Console;
 
 public class Coder
 {
-    //private string ResultCode = "";
-    public int ProgressValue {  get; private set; }
-
     public Coder() { }
 
     public void Coding(string InputPath)
     {
         BinaryReader ReaderInputFile = new BinaryReader(new FileStream(InputPath, FileMode.Open, FileAccess.Read));
-        int fileLenght = (int)ReaderInputFile.BaseStream.Length;
         char symbol;
         Dictionary<char, int> keyValuePairs = new Dictionary<char, int>(); // заполнение словоря буквами из которых состоят входные данные и высчитываем частоту их появления
-        while (ReaderInputFile.PeekChar() != -1)
+        while (ReaderInputFile.PeekChar() != -1) //Пока недостигнут конец файла
         {
-            symbol = ReaderInputFile.ReadChar();
+            symbol = ReaderInputFile.ReadChar(); //Считывание символа
 
             if (keyValuePairs.ContainsKey(symbol))
             {
@@ -33,7 +22,6 @@ public class Coder
                 keyValuePairs.Add(symbol, 1);
             }
         }
-        keyValuePairs.Add('\0', 1);
 
         ReaderInputFile.BaseStream.Position = 0;
 
@@ -44,14 +32,9 @@ public class Coder
 
         CreateTree(keyValuePairs, tree);
 
-        Dictionary<char, string> keyCodes = new Dictionary<char, string>();
-
-        
-
+        Dictionary<char, string> keyCodes = new Dictionary<char, string>(); // Создание словаря с кодами букв
         CreateKeyCodes(tree, keyCodes);
         keyCodes = new Dictionary<char, string>(keyCodes.OrderBy(i => i.Key));
-
-        bool fEnd = false;
 
         string path = InputPath.Replace(InputPath.Substring(InputPath.LastIndexOf('.')), ".vld");
         using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Create))) { }
@@ -61,14 +44,6 @@ public class Coder
             System.Console.WriteLine($"{keyCodes.ElementAt(i).Key} {keyCodes.ElementAt(i).Value}");
         }
 
-        //string returnString = ""; //Создание закодированной строки
-
-        //for (int i = 0; i < fileLenght; i++)
-        //{
-        //    symbol = ReaderInputFile.ReadChar();
-        //    returnString += keyCodes[symbol];
-        //}
-
         string codeString = "";
 
         for (int i = 0; i < keyCodes.Count; i++) // Передача алфавита кодов в начале строки
@@ -76,6 +51,8 @@ public class Coder
             codeString += keyCodes.ElementAt(i).Key;
             codeString += keyCodes.ElementAt(i).Value;
         }
+
+        long PositionLengthValue = 0;
 
         using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Open)))
         {
@@ -85,62 +62,43 @@ public class Coder
                 writer.Write(keyCodes.ElementAt(i).Key);
                 writer.Write(keyCodes.ElementAt(i).Value);
             }
+            PositionLengthValue = writer.BaseStream.Position;
         }
 
         byte w = 0b1000_0000;
         byte writenBits = 0b0000_0000;
-        int iterPlusBar = 0;
 
-        while (ReaderInputFile.PeekChar() != -1)
+        using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Open)))
         {
-            //if (iterPlusBar > plusBar)
-            //{
-            //    iterPlusBar = 0;
-            //    ProgressValue++;
-            //}
-            //else
-            //{
-            //    iterPlusBar++;
-            //}
-            //string CodeNowChar = GetKeyCode(Str[0], keyCodes);
-            symbol = ReaderInputFile.ReadChar();
-            string CodeNowChar = "";
-            SearcInTree(symbol, tree, ref CodeNowChar);
-            for (int i = 0; i < CodeNowChar.Length; i++)
+            writer.Seek(4, SeekOrigin.End);
+
+            int BitsToReadForDecoder = 0;
+
+            while (ReaderInputFile.PeekChar() != -1)
             {
-                if (symbol == '\0' && i + 1 == CodeNowChar.Length)
+                symbol = ReaderInputFile.ReadChar();
+                string CodeNowChar = "";
+                SearcInTree(symbol, tree, ref CodeNowChar);
+                for (int i = 0; i < CodeNowChar.Length; i++)
                 {
-                    fEnd = true;
-                }
-                if (CodeNowChar[i] == '1')
-                {
-                    writenBits = (byte)(writenBits | w);
-                }
-                w >>= 1;
-                if (w == 0b0000_0000 || fEnd)
-                {
-                    using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Open)))
+                    if (CodeNowChar[i] == '1')
                     {
-                        writer.Seek(0, SeekOrigin.End);
+                        writenBits = (byte)(writenBits | w);
+                    }
+                    w >>= 1;
+                    BitsToReadForDecoder++;
+
+                    if (w == 0b0000_0000 || ReaderInputFile.PeekChar() == -1)
+                    {
                         writer.Write(writenBits);
-                    }
-                    writenBits = 0b0000_0000;
-                    w = 0b1000_0000;
-
-                    if (fEnd)
-                    {
-                        break;
+                        writenBits = 0b0000_0000;
+                        w = 0b1000_0000;
                     }
                 }
             }
-
-            if (fEnd)
-            {
-                break;
-            }
+            writer.BaseStream.Position = PositionLengthValue;
+            writer.Write(BitsToReadForDecoder);
         }
-
-        //return returnString;
     }
 
     private Node CreateTree(Dictionary<char, int> keyValuePairs, Node parent) // Функция создания дерева
@@ -164,7 +122,6 @@ public class Coder
             }
             if (Math.Abs(leftSum - rightSum) <= raznica)
             {
-                //System.Console.WriteLine($"{leftSum} {rightSum} {leftSum - rightSum} {i}");
                 raznica = Math.Abs(leftSum - rightSum);
                 imin = i;
             }
@@ -224,27 +181,6 @@ public class Coder
             keyCodes.Add((char)node.Item, code);
         }
     }
-
-    //private string GetKeyCode(char keyCode, Dictionary<char, string> keyCodes)
-    //{
-    //    int a = 0; 
-    //    int b = keyCodes.Count;
-    //    int n = keyCodes.Count / 2;
-    //    while (keyCode != keyCodes.ElementAt(n).Key)
-    //    {
-    //        if (keyCode < keyCodes.ElementAt(n).Key)
-    //        {
-    //            b = n;
-    //        }
-    //        else
-    //        {
-    //            a = n;
-    //        }
-    //        n = (a + b) / 2;
-    //    }
-
-    //    return keyCodes.ElementAt(n).Value;
-    //}
 
     private void SearcInTree(char keyCode, Node tree, ref string resultCode, string code = "")
     {

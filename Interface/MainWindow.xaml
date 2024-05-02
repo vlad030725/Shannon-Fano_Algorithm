@@ -68,7 +68,7 @@
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="1" Margin="10">
-                        <ProgressBar x:Name="progressBar"/>
+                        <ProgressBar x:Name="progressBar"/> 
                         
                     </Grid>
                 </Grid>
