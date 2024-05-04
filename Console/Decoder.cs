@@ -4,12 +4,13 @@ public class Decoder
 {
     public Decoder() { }
 
-    public void Decoding(string pathInput, string pathOutput)
+    public void Decoding(string pathInput, string pathOutput, ref TimeSpan totalTimeSpan)
     {
+        long begin = DateTime.Now.Ticks; //Время начала выполнения
         Dictionary<char, int> keyValuePairs = new Dictionary<char, int>();
-        using (BinaryWriter writer = new BinaryWriter(new FileStream(pathOutput, FileMode.Create, FileAccess.Write))) { }
+        using (BinaryWriter writer = new BinaryWriter(new FileStream(pathOutput, FileMode.Create, FileAccess.Write))) { } //Создание декодированного файла
 
-        using (BinaryReader reader = new BinaryReader(File.Open(pathInput, FileMode.Open)))
+        using (BinaryReader reader = new BinaryReader(File.Open(pathInput, FileMode.Open))) //Открытие сжатого файла
         {
             int count = reader.ReadInt32(); //Мощность алфавита
             for (int i = 0; i < count; i++) //Считывание каждой буквы алфавита и её код
@@ -32,16 +33,11 @@ public class Decoder
 
                 for (int k = 0; k < count / 8 + 1; k++) //Перебор по количеству байт в файле
                 {
-                    readBits = reader.ReadByte();
+                    readBits = reader.ReadByte(); //Чтение байта информации из закодированного файла
 
-                    if (k == count / 8)
+                    for (int i = 0; i < ((k == count / 8) ? count % 8 : 8); i++) //Обход битов байта: 8 бит, кроме последнего байта
                     {
-                        int var = count % 8;
-                    }
-
-                    for (int i = 0; i < ((k == count / 8) ? count % 8 : 8); i++)
-                    {
-                        byte tmpBit = (byte)(readBits & w);
+                        byte tmpBit = (byte)(readBits & w); //Определение значение бита
                         if (tmpBit == 0b0000_0000)
                         {
                             stringCode += "0";
@@ -58,7 +54,7 @@ public class Decoder
                     int startindex = 0;
                     string tmpCharCode = "";
 
-                    for (int i = 0; i < stringCode.Length; i++)
+                    for (int i = 0; i < stringCode.Length; i++) //Расшифровка имеющегося кода прочитанных битов
                     {
                         tmpCharCode += stringCode[i];
                         char? c = tree.SearcCharInTree(tmpCharCode);
@@ -73,5 +69,7 @@ public class Decoder
                 }
             }
         }
+        long end = DateTime.Now.Ticks; //Время конца выполнения
+        totalTimeSpan = new TimeSpan(end - begin); //Итоговое время выполнения
     }
 }

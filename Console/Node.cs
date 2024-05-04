@@ -1,4 +1,6 @@
-﻿namespace Console
+﻿using System.Linq;
+
+namespace Console
 {
     public class Node
     {
@@ -8,32 +10,27 @@
         public Node? ParentNode { get; set; } // родительский элемент текущего узла
         public char? Item { get; set; } // хранящееся значение в узле дерева
 
-        public Node CreateTree(Dictionary<char, int> keyValuePairs)
+        public Node CreateTree(Dictionary<char, int> keyValuePairs) //Функция создания дерева по словарю символ-частота
         {
-            Node node = null;
-
-            int leftSum = 0;
-            int rightSum = 0;
-            int raznica = int.MaxValue;
+            int leftSum = keyValuePairs.ElementAt(0).Value;
+            int rightSum = keyValuePairs.Sum(x => x.Value) - leftSum;
+            int raznica = Math.Abs(leftSum - rightSum);
             int imin = 0;
 
-            for (int i = 0; i < keyValuePairs.Count - 1; i++) // Разделение символов на две группы приверно равные по сумме частоты встречи
+            for (int i = 1; i < keyValuePairs.Count - 1; i++) // Разделение символов на две группы приверно равные по сумме частоты встречи
             {
-                for (int j = 0; j <= i; j++)
-                {
-                    leftSum += keyValuePairs.ElementAt(j).Value;
-                }
-                for (int j = i + 1; j < keyValuePairs.Count; j++)
-                {
-                    rightSum += keyValuePairs.ElementAt(j).Value;
-                }
-                if (Math.Abs(leftSum - rightSum) <= raznica)
+                leftSum += keyValuePairs.ElementAt(i).Value; //Перемещение элемента правой суммы в левую
+                rightSum -= keyValuePairs.ElementAt(i).Value;
+
+                if (Math.Abs(leftSum - rightSum) <= raznica) //Перерасчёт разницы
                 {
                     raznica = Math.Abs(leftSum - rightSum);
                     imin = i;
                 }
-                leftSum = 0;
-                rightSum = 0;
+                else
+                {
+                    break;
+                }
             }
 
             Dictionary<char, int> leftKeyValuePairs = new Dictionary<char, int>(); // Инициализация первой группы символов
@@ -70,7 +67,7 @@
             return this;
         }
 
-        public void SearcCodeInTree(char keyCode, ref string resultCode, string code = "")
+        public void SearcCodeInTree(char keyCode, ref string resultCode, string code = "") //Поиск кода по символу
         {
             if (Item == null && resultCode == "")
             {
@@ -86,7 +83,7 @@
             }
         }
 
-        public char? SearcCharInTree(string code)
+        public char? SearcCharInTree(string code) //Поиск символа по коду
         {
             if (code == "")
             {

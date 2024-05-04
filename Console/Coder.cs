@@ -4,8 +4,9 @@ public class Coder
 {
     public Coder() { }
 
-    public void Coding(string InputPath)
+    public void Coding(string InputPath, ref TimeSpan totalTimeSpan, ref double compressionRatioDouble)
     {
+        long begin = DateTime.Now.Ticks; //Время начала выполнения
         BinaryReader ReaderInputFile = new BinaryReader(new FileStream(InputPath, FileMode.Open, FileAccess.Read));
         char symbol;
         Dictionary<char, int> keyValuePairs = new Dictionary<char, int>(); // заполнение словоря буквами из которых состоят входные данные и высчитываем частоту их появления
@@ -64,16 +65,16 @@ public class Coder
                 {
                     if (CodeNowChar[i] == '1') //"Сборка" байта из битов
                     {
-                        writenBits = (byte)(writenBits | w);
+                        writenBits = (byte)(writenBits | w); //Побитовое сложение байта для записи с битовой маской
                     }
                     w >>= 1;
                     BitsToReadForDecoder++; //Подсчёт количиства записанных битов
 
-                    if (w == 0b0000_0000) //Запись в файл "собранного" байта
+                    if (w == 0b0000_0000) //Если все биты записаны в байт
                     {
-                        writer.Write(writenBits);
-                        writenBits = 0b0000_0000;
-                        w = 0b1000_0000;
+                        writer.Write(writenBits); //Запись в файл "собранного" байта
+                        writenBits = 0b0000_0000; //Отчистка байта
+                        w = 0b1000_0000; //Отчистка побитовой маски
                     }
                 }
             }
@@ -82,5 +83,8 @@ public class Coder
             writer.BaseStream.Position = PositionLengthValue; //Возвращение в позицию после алфавита для записи количиства записанных битов
             writer.Write(BitsToReadForDecoder);
         }
+        long end = DateTime.Now.Ticks; //Время конца выполнения
+        totalTimeSpan = new TimeSpan(end - begin); //Итоговое время выполнения
+        compressionRatioDouble = ((new FileInfo(InputPath).Length - new FileInfo(InputPath.Replace(InputPath.Substring(InputPath.LastIndexOf('.')), ".vld")).Length) / (double)new FileInfo(InputPath).Length) * 100; //Рассчёт степени сжатия
     }
 }

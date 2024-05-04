@@ -67,10 +67,6 @@
                                    x:Name="StatusLabelCoding"/>
                         </Grid>
                     </Grid>
-                    <Grid Grid.Row="1" Margin="10">
-                        <ProgressBar x:Name="progressBar"/> 
-                        
-                    </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="Декодер" Height="20" VerticalAlignment="Bottom">
